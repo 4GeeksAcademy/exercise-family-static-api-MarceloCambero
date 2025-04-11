@@ -5,6 +5,7 @@ Update this file to implement the following already declared methods:
 - get_member: Should return a member from the self._members list
 """
 
+
 class FamilyStructure:
     def __init__(self, last_name):
         self.last_name = last_name

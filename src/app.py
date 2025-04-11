@@ -16,7 +16,6 @@ CORS(app)
 # Create the jackson family object
 jackson_family = FamilyStructure("Jackson")
 
-
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
@@ -50,6 +49,7 @@ def get_member(member_id):
         return jsonify({'error': str(e)}), 500
 
 
+#TODOS LOS METODOS POST LLEVAN UN REQUIRED
 
 @app.route('/members', methods=['POST'])
 def add_member():
@@ -59,8 +59,9 @@ def add_member():
         if not member_data:
             return jsonify({"error": "Request body must be JSON"}), 400
 
-        # Validamos la existencia de campos requeridos. Por ejemplo, first_name, age y lucky_numbers.
-        required_fields = ["first_name", "age", "lucky_numbers"]
+       #DE LA LINEA 63 A LA 66 SIEMPRE LA ESTRUCTURA VA A SER LA MISMA 
+        required_fields = ["first_name", "age", "lucky_numbers"] #cAMBIAREMOS LOS CAMPOS DENTRO DE LOS CORCHETES A LO QUE ME
+                                                                    #INTERESE SABER
         for field in required_fields:
             if field not in member_data:
                 return jsonify({"error": f"Missing required field: {field}"}), 400

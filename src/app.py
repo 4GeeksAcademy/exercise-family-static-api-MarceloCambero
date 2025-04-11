@@ -30,13 +30,57 @@ def sitemap():
 
 
 @app.route('/members', methods=['GET'])
-def handle_hello():
-    # This is how you can use the Family datastructure by calling its methods
-    members = jackson_family.get_all_members()
-    response_body = {"hello": "world",
-                     "family": members}
-    return jsonify(response_body), 200
+def get_members():
+    try:
+        members = jackson_family.get_all_members()
+        return jsonify(members), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
+
+@app.route('/members/<int:member_id>', methods=['GET'])
+def get_member(member_id):
+    try:
+        member = jackson_family.get_member(member_id)
+        if member:
+            return jsonify(member), 200
+        else:
+            return jsonify({"error": "Member not found"}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+
+@app.route('/members', methods=['POST'])
+def add_member():
+    try:
+        member_data = request.get_json()
+        # Verificamos que se reciba un JSON válido
+        if not member_data:
+            return jsonify({"error": "Request body must be JSON"}), 400
+
+        # Validamos la existencia de campos requeridos. Por ejemplo, first_name, age y lucky_numbers.
+        required_fields = ["first_name", "age", "lucky_numbers"]
+        for field in required_fields:
+            if field not in member_data:
+                return jsonify({"error": f"Missing required field: {field}"}), 400
+
+        added_member = jackson_family.add_member(member_data)
+        return jsonify(added_member), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/members/<int:member_id>', methods=['DELETE'])
+def delete_member(member_id):
+    try:
+        success = jackson_family.delete_member(member_id)
+        if success:
+            return jsonify({"done": True}), 200
+        else:
+            return jsonify({"error": "Member not found"}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 # This only runs if `$ python src/app.py` is executed
